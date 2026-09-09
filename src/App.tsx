@@ -9,14 +9,15 @@ import { CourseDetails } from './components/CourseDetails';
 import { TopupForm } from './components/TopupForm';
 import { ProfileDetails } from './components/ProfileDetails';
 import { LanguageModal } from './components/LanguageModal';
-import { TaskDetails } from './components/TaskDetails';
+import { ExamDetails } from './components/TaskDetails';
 import { TransactionDetails } from './components/TransactionDetails';
 import { NotificationsModal } from './components/NotificationsModal';
 import { MyCoursesModal } from './components/MyCoursesModal';
+import { AdminDashboard } from './components/AdminDashboard';
 import { AuthScreen } from './components/AuthScreen';
 import { EmailVerificationScreen } from './components/EmailVerificationScreen';
-import { TabType, Task, PurchasedCourse, AppNotification } from './types';
-import { mockTasks, mockCourses, mockTransactions, mockNotifications, mockPurchasedCourses } from './data';
+import { TabType, Exam, PurchasedCourse, AppNotification } from './types';
+import { mockExams, mockCourses, mockTransactions, mockNotifications, mockPurchasedCourses } from './data';
 import { motion, AnimatePresence } from 'motion/react';
 import { Loader2 } from 'lucide-react';
 import { auth, db } from './firebase';
@@ -34,7 +35,7 @@ export default function App() {
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('home');
-  const [tasks, setTasks] = useState<Task[]>(mockTasks);
+  const [exams, setExams] = useState<Exam[]>(mockExams);
   const [notifications, setNotifications] = useState<AppNotification[]>(mockNotifications);
   const [purchasedCourses, setPurchasedCourses] = useState<PurchasedCourse[]>(mockPurchasedCourses);
   const [balance, setBalance] = useState(40000);
@@ -44,13 +45,14 @@ export default function App() {
 
   // Overlay states
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null); // maps to Exam ID now
   const [selectedTransactionId, setSelectedTransactionId] = useState<string | null>(null);
   const [showTopup, setShowTopup] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMyCourses, setShowMyCourses] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -87,7 +89,6 @@ export default function App() {
       setIsAuthLoading(true);
       try {
         await authUser.reload();
-        // Create a new reference or force state update by relying on the reloaded authUser.emailVerified
         if (authUser.emailVerified) {
           setIsAuthenticated(true);
           try {
@@ -97,8 +98,7 @@ export default function App() {
             }
           } catch (error) {}
         } else {
-           // still not verified
-           setAuthUser({...authUser} as User); // force re-render
+           setAuthUser({...authUser} as User);
         }
       } catch (err) {
         console.error("Reload error", err);
@@ -131,7 +131,8 @@ export default function App() {
       description: `بڕی ${amount.toLocaleString()} دینار بە سەرکەوتوویی خرایە سەر هەژمارەکەت.`,
       date: new Date().toLocaleString('en-US', { hour12: true }),
       read: false,
-      type: 'topup'
+      type: 'topup',
+      actionId: 'new_transaction_id' // Just a dummy for now
     };
     setNotifications([newNotif, ...notifications]);
     showToast(`بڕی ${amount.toLocaleString()} دینار خرایە سەر هەژمارەکەت`, 'success');
@@ -154,7 +155,6 @@ export default function App() {
       return;
     }
 
-    // Success Purchase
     setBalance(prev => prev - course.price);
     const newPurchased: PurchasedCourse = {
       ...course,
@@ -170,7 +170,8 @@ export default function App() {
       description: `بە سەرکەوتوویی بەشداربوویت لە کۆرسی ${course.title}.`,
       date: new Date().toLocaleString('en-US', { hour12: true }),
       read: false,
-      type: 'purchase'
+      type: 'purchase',
+      actionId: courseId
     };
     setNotifications([newNotif, ...notifications]);
     
@@ -178,12 +179,25 @@ export default function App() {
     setSelectedCourseId(null);
   };
 
-  const handleToggleTask = (id: string) => {
-    setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-  };
-
   const handleMarkAllRead = () => {
     setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+  
+  const handleNotificationClick = (notif: AppNotification) => {
+    setShowNotifications(false);
+    
+    if (notif.type === 'course' && notif.actionId) {
+      setActiveTab('courses');
+      setSelectedCourseId(notif.actionId);
+    } else if (notif.type === 'purchase' && notif.actionId) {
+      setActiveTab('courses');
+      setSelectedCourseId(notif.actionId);
+    } else if (notif.type === 'topup' && notif.actionId) {
+      setActiveTab('wallet');
+      if (notif.actionId !== 'new_transaction_id') {
+        setSelectedTransactionId(notif.actionId);
+      }
+    }
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -221,8 +235,8 @@ export default function App() {
       case 'home': return <HomeTab userName={userName} onNavigate={setActiveTab} onOpenCourse={setSelectedCourseId} unreadCount={unreadCount} onOpenNotifications={() => setShowNotifications(true)} onOpenMyCourses={() => setShowMyCourses(true)} />;
       case 'courses': return <CoursesTab onOpenCourse={setSelectedCourseId} onOpenMyCourses={() => setShowMyCourses(true)} />;
       case 'wallet': return <WalletTab balance={balance} onOpenTopup={() => setShowTopup(true)} onOpenTransaction={setSelectedTransactionId} />;
-      case 'tasks': return <TasksTab tasks={tasks} onToggle={handleToggleTask} onOpenTask={setSelectedTaskId} />;
-      case 'settings': return <SettingsTab userName={userName} userEmail={userEmail} onToast={(m) => showToast(m, 'info')} onOpenProfile={() => setShowProfile(true)} onOpenLanguage={() => setShowLanguage(true)} onOpenMyCourses={() => setShowMyCourses(true)} onLogout={handleLogout} />;
+      case 'tasks': return <TasksTab tasks={exams} onOpenTask={setSelectedTaskId} />;
+      case 'settings': return <SettingsTab userName={userName} userEmail={userEmail} onToast={(m) => showToast(m, 'info')} onOpenProfile={() => setShowProfile(true)} onOpenLanguage={() => setShowLanguage(true)} onOpenMyCourses={() => setShowMyCourses(true)} onOpenAdmin={() => setShowAdmin(true)} onLogout={handleLogout} />;
       default: return <HomeTab userName={userName} onNavigate={setActiveTab} onOpenCourse={setSelectedCourseId} unreadCount={unreadCount} onOpenNotifications={() => setShowNotifications(true)} onOpenMyCourses={() => setShowMyCourses(true)} />;
     }
   };
@@ -274,10 +288,9 @@ export default function App() {
           )}
           
           {selectedTaskId && (
-            <TaskDetails 
-              task={tasks.find(t => t.id === selectedTaskId)!} 
+            <ExamDetails 
+              exam={exams.find(e => e.id === selectedTaskId)!} 
               onClose={() => setSelectedTaskId(null)} 
-              onToggle={handleToggleTask} 
             />
           )}
 
@@ -293,6 +306,7 @@ export default function App() {
               notifications={notifications}
               onClose={() => setShowNotifications(false)}
               onMarkAllRead={handleMarkAllRead}
+              onNotificationClick={handleNotificationClick}
             />
           )}
 
@@ -301,6 +315,13 @@ export default function App() {
               courses={purchasedCourses}
               onClose={() => setShowMyCourses(false)}
               onOpenCourse={setSelectedCourseId}
+            />
+          )}
+
+          {showAdmin && (
+            <AdminDashboard 
+              onClose={() => setShowAdmin(false)} 
+              onToast={(m) => showToast(m)}
             />
           )}
 

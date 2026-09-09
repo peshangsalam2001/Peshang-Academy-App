@@ -6,9 +6,10 @@ interface NotificationsModalProps {
   notifications: AppNotification[];
   onClose: () => void;
   onMarkAllRead: () => void;
+  onNotificationClick?: (notification: AppNotification) => void;
 }
 
-export function NotificationsModal({ notifications, onClose, onMarkAllRead }: NotificationsModalProps) {
+export function NotificationsModal({ notifications, onClose, onMarkAllRead, onNotificationClick }: NotificationsModalProps) {
   
   const getIcon = (type: string) => {
     switch(type) {
@@ -59,38 +60,46 @@ export function NotificationsModal({ notifications, onClose, onMarkAllRead }: No
         </div>
 
         <div className="flex flex-col gap-3">
-          {notifications.map((notification) => (
-            <div 
-              key={notification.id} 
-              className={`p-4 rounded-[20px] flex gap-4 ${
-                notification.read 
-                  ? 'bg-transparent border border-gray-100 dark:border-gray-800' 
-                  : 'bg-white dark:bg-gray-800 shadow-sm border border-indigo-100 dark:border-indigo-900/30 relative overflow-hidden'
-              }`}
-            >
-              {!notification.read && (
-                <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
-              )}
-              
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${getBg(notification.type)}`}>
-                {getIcon(notification.type)}
-              </div>
-              
-              <div className="flex-1">
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className={`font-bold text-sm ${notification.read ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-white'}`}>
-                    {notification.title}
-                  </h3>
-                  <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium whitespace-nowrap mr-2">
-                    {notification.date.split(' ')[0]}
-                  </span>
+          {notifications.map((notification) => {
+            const isClickable = notification.type !== 'system' && notification.actionId;
+            return (
+              <div 
+                key={notification.id} 
+                onClick={() => {
+                  if (isClickable && onNotificationClick) {
+                    onNotificationClick(notification);
+                  }
+                }}
+                className={`p-4 rounded-[20px] flex gap-4 ${isClickable ? 'cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors' : ''} ${
+                  notification.read 
+                    ? 'bg-transparent border border-gray-100 dark:border-gray-800' 
+                    : 'bg-white dark:bg-gray-800 shadow-sm border border-indigo-100 dark:border-indigo-900/30 relative overflow-hidden'
+                }`}
+              >
+                {!notification.read && (
+                  <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+                )}
+                
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${getBg(notification.type)}`}>
+                  {getIcon(notification.type)}
                 </div>
-                <p className={`text-xs leading-relaxed ${notification.read ? 'text-gray-500 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}>
-                  {notification.description}
-                </p>
+                
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-1">
+                    <h3 className={`font-bold text-sm ${notification.read ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-white'}`}>
+                      {notification.title}
+                    </h3>
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium whitespace-nowrap mr-2">
+                      {notification.date.split(' ')[0]}
+                    </span>
+                  </div>
+                  <p className={`text-xs leading-relaxed ${notification.read ? 'text-gray-500 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}>
+                    {notification.description}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </motion.div>

@@ -19,7 +19,11 @@ export function CourseDetails({ course, hasPurchased, onClose, onBuy }: CourseDe
       className="absolute inset-0 bg-white dark:bg-gray-900 z-50 flex flex-col overflow-hidden"
     >
       {/* Header Image Area */}
-      <div className="relative h-64 bg-gray-100 dark:bg-gray-800 shrink-0 border-b border-gray-100 dark:border-gray-800">
+      <div className="relative h-64 bg-gray-100 dark:bg-gray-800 shrink-0 border-b border-gray-100 dark:border-gray-800 overflow-hidden">
+        {course.image && (
+          <img src={course.image} alt={course.title} className="absolute inset-0 w-full h-full object-cover" referrerPolicy="no-referrer" />
+        )}
+        {course.image && <div className="absolute inset-0 bg-black/20 dark:bg-black/40" />}
         <button 
           onClick={onClose}
           className="absolute top-12 right-6 w-10 h-10 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-900 dark:text-white shadow-sm z-10 cursor-pointer"
@@ -27,9 +31,11 @@ export function CourseDetails({ course, hasPurchased, onClose, onBuy }: CourseDe
           <ArrowRight size={20} strokeWidth={2} />
         </button>
         
-        <div className="absolute inset-0 flex items-center justify-center">
-          <PlayCircle size={64} strokeWidth={1} className="text-gray-300 dark:text-gray-600" />
-        </div>
+        {!course.image && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <PlayCircle size={64} strokeWidth={1} className="text-gray-300 dark:text-gray-600" />
+          </div>
+        )}
       </div>
 
       {/* Content */}

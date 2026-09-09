@@ -12,6 +12,7 @@ export const mockCourses: Course[] = [
     students: 1250,
     color: 'bg-blue-500',
     icon: 'FileText',
+    image: 'https://images.unsplash.com/photo-1618498082410-b4aa22193b38?q=80&w=800&auto=format&fit=crop',
     description: 'لە ڕێگەی ئەم کۆرسەوە فێری هەموو تایبەتمەندییەکانی مایکرۆسۆفت وۆرد دەبیت لە ئاستی سەرەتاییەوە تا پێشکەوتوو. فێری دروستکردنی سیڤی، ڕاپۆرت، و خشتەی پێشکەوتوو دەبیت.',
     lessonsCount: 24
   },
@@ -25,6 +26,7 @@ export const mockCourses: Course[] = [
     students: 840,
     color: 'bg-rose-500',
     icon: 'Database',
+    image: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=800&auto=format&fit=crop',
     description: 'باشترین کۆرس بۆ دروستکردنی بنکەدراوەیەکی بەهێز بۆ کۆمپانیا و فرۆشگاکان. فێری دروستکردنی فۆڕم و ڕاپۆرتی ئاڵۆز دەبیت.',
     lessonsCount: 18
   },
@@ -39,6 +41,7 @@ export const mockCourses: Course[] = [
     students: 2100,
     color: 'bg-slate-700',
     icon: 'PenTool',
+    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=800&auto=format&fit=crop',
     description: 'کۆرسێکی تەواوەتی بۆ ئەندازیاران بۆ کێشانی نەخشەی 2D و 3D بە وردی. پڕۆژەی ڕاستەقینەی تێدایە بۆ دروستکردنی نەخشەی بینا.',
     lessonsCount: 42
   },
@@ -53,6 +56,7 @@ export const mockCourses: Course[] = [
     students: 1560,
     color: 'bg-green-600',
     icon: 'Table',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop',
     description: 'لە ڕێگەی ئەم کۆرسەوە فێری هاوکێشە بیرکارییەکان، ڤیلکئەپ (VLOOKUP)، و دروستکردنی داشبۆردی داتاکان دەبیت لە ئێکسڵ.',
     lessonsCount: 30
   }
@@ -98,7 +102,8 @@ export const mockNotifications: AppNotification[] = [
     description: 'بڕی 50,000 دینار خرایە سەر هەژمارەکەت لە ڕێگەی FastPay.',
     date: '2023-10-25 10:30 AM',
     read: false,
-    type: 'topup'
+    type: 'topup',
+    actionId: 't1'
   },
   {
     id: 'n2',
@@ -106,7 +111,8 @@ export const mockNotifications: AppNotification[] = [
     description: 'کۆرسی نوێی "ئۆتۆکاد بۆ ئەندازیاران" لەلایەن م. نەریمان جەلال بڵاوکرایەوە. ئێستا دەتوانیت بەشداری بکەیت!',
     date: '2023-10-25 04:00 PM',
     read: false,
-    type: 'course'
+    type: 'course',
+    actionId: 'c3'
   },
   {
     id: 'n3',
@@ -114,7 +120,8 @@ export const mockNotifications: AppNotification[] = [
     description: 'پیرۆزە! بە سەرکەوتوویی بەشداربوویت لە کۆرسی مایکرۆسۆفت ئەکسێس.',
     date: '2023-10-26 02:15 PM',
     read: false,
-    type: 'purchase'
+    type: 'purchase',
+    actionId: 'c2'
   },
   {
     id: 'n4',
@@ -126,30 +133,54 @@ export const mockNotifications: AppNotification[] = [
   }
 ];
 
-export const mockTasks: Task[] = [
+export const mockExams = [
   {
-    id: 'tsk1',
-    course: 'مایکرۆسۆفت وۆرد لە سفرەوە',
-    title: 'دروستکردنی سیڤی بە بەکارهێنانی تێمپلەیت',
-    dueDate: 'سبەی - 11:59 PM',
-    completed: false,
-    description: 'لە پەڕەیەکی وۆرددا سیڤییەکی تەواو بۆ خۆت دروست بکە، با وێنە، خشتە، و هێماکانی تێدا بێت بە شێوەیەکی ڕێک و پێک.'
+    id: 'ex1',
+    courseId: 'c1',
+    courseName: 'مایکرۆسۆفت وۆرد لە سفرەوە',
+    title: 'تاقیکردنەوەی مایکرۆسۆفت وۆرد',
+    date: 'دوای ٢ ڕۆژی تر - پێنجشەممە',
+    durationMinutes: 15,
+    totalMarks: 50,
+    status: 'upcoming' as const,
+    description: 'ئەم تاقیکردنەوەیە لەسەر بابەتەکانی دروستکردنی خشتە، دیزاینی پەڕە و نووسینی ڕاپۆرتە. تەنها خاوەنەکانی ئەم کۆرسە دەتوانن بەشداری بکەن.'
   },
   {
-    id: 'tsk2',
-    course: 'ئۆتۆکاد بۆ ئەندازیاران',
-    title: 'کێشانی نەخشەی خانانوویەکی ١٠٠ مەتری',
-    dueDate: 'دوو ڕۆژی تر',
-    completed: false,
-    description: 'نەخشەی نهۆمی یەکەمی خانوویەکی ١٠٠ مەتری بکێشە بە بەکارهێنانی ئۆتۆکاد، دیوارەکان، دەرگا و پەنجەرەکانی تێدا دیاری بکە.'
+    id: 'ex2',
+    courseId: 'c2',
+    courseName: 'مایکرۆسۆفت ئەکسێس بۆ پێشکەوتووان',
+    title: 'تاقیکردنەوەی کۆتایی ئەکسێس',
+    date: 'ڕۆژی شەممە',
+    durationMinutes: 30,
+    totalMarks: 100,
+    status: 'upcoming' as const,
+    description: 'تاقیکردنەوەیەکی گشتگیر لەسەر دروستکردنی فۆڕم، ڕاپۆرت، و پەیوەندی نێوان خشتەکان. تەنها خاوەنەکانی ئەم کۆرسە دەتوانن بەشداری بکەن.'
   },
   {
-    id: 'tsk3',
-    course: 'مایکرۆسۆفت ئەکسێس',
-    title: 'دروستکردنی خشتەی قوتابیان',
-    dueDate: 'هەفتەی پێشوو',
-    completed: true,
-    description: 'بنکەدراوەیەک دروست بکە و خشتەیەکی تێدا بکە بۆ ناوی ١٠ قوتابی و نمرەکانیان.'
+    id: 'ex3',
+    courseId: 'c4',
+    courseName: 'فێربوونی مایکرۆسۆفت ئێکسڵ',
+    title: 'تاقیکردنەوەی هاوکێشەکان (VLOOKUP)',
+    date: 'هەفتەی پێشوو',
+    durationMinutes: 10,
+    totalMarks: 20,
+    status: 'completed' as const,
+    description: 'تاقیکردنەوەیەک سەبارەت بە دۆزینەوەی زانیاری بە بەکارهێنانی هاوکێشە سەرەکییەکان.'
+  }
+];
+
+export const mockContinueLearning = [
+  {
+    courseId: 'c1',
+    course: mockCourses[0], // Word
+    currentLesson: 'وانەی ٤: دروستکردنی خشتە',
+    progress: 45
+  },
+  {
+    courseId: 'c3',
+    course: mockCourses[2], // AutoCAD
+    currentLesson: 'وانەی ١٠: کێشانی نەخشەی سەرەتایی',
+    progress: 24
   }
 ];
 

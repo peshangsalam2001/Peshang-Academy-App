@@ -57,8 +57,15 @@ export function MyCoursesModal({ courses, onClose, onOpenCourse }: MyCoursesModa
                 className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <div className="p-4 flex gap-4 border-b border-gray-50 dark:border-gray-700/50">
-                  <div className={`w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 ${course.color} bg-opacity-10 dark:bg-opacity-20 text-${course.color.replace('bg-', '')}`}>
-                    <PlayCircle size={32} strokeWidth={1.5} />
+                  <div className={`w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden relative ${course.color} bg-opacity-10 dark:bg-opacity-20 text-${course.color.replace('bg-', '')}`}>
+                    {course.image ? (
+                      <>
+                        <img src={course.image} alt={course.title} className="w-full h-full object-cover opacity-60" referrerPolicy="no-referrer" />
+                        <PlayCircle size={32} strokeWidth={1.5} className="absolute text-white shadow-sm drop-shadow-md" />
+                      </>
+                    ) : (
+                      <PlayCircle size={32} strokeWidth={1.5} />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-gray-900 dark:text-white text-base truncate mb-1">{course.title}</h3>

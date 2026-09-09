@@ -37,9 +37,11 @@ export function ProfileDetails({ onClose, onToast }: ProfileDetailsProps) {
       <div className="flex-1 overflow-y-auto px-6 py-6 no-scrollbar pb-32">
         
         <div className="flex flex-col items-center mb-8">
-          <div className="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center text-gray-400 border border-gray-200 dark:border-gray-700 shadow-sm relative mb-4">
-            <User size={40} strokeWidth={1.5} />
-            <button className="absolute bottom-0 right-0 w-8 h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full flex items-center justify-center shadow-sm cursor-pointer border-2 border-white dark:border-gray-900">
+          <div className="relative mb-4">
+            <div className="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center text-gray-400 border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop" alt="avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            </div>
+            <button className="absolute bottom-0 right-0 w-8 h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full flex items-center justify-center shadow-sm cursor-pointer border-2 border-white dark:border-gray-900 z-10 hover:scale-105 transition-transform">
               <span className="text-lg leading-none mb-1">+</span>
             </button>
           </div>

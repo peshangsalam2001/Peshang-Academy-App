@@ -6,12 +6,13 @@ interface SettingsTabProps {
   onOpenProfile: () => void;
   onOpenLanguage: () => void;
   onOpenMyCourses: () => void;
+  onOpenAdmin: () => void;
   onLogout: () => void;
   userName: string;
   userEmail: string;
 }
 
-export function SettingsTab({ onToast, onOpenProfile, onOpenLanguage, onOpenMyCourses, onLogout, userName, userEmail }: SettingsTabProps) {
+export function SettingsTab({ onToast, onOpenProfile, onOpenLanguage, onOpenMyCourses, onOpenAdmin, onLogout, userName, userEmail }: SettingsTabProps) {
   const [isDark, setIsDark] = useState(false);
 
   // Check initial dark mode state
@@ -25,7 +26,15 @@ export function SettingsTab({ onToast, onOpenProfile, onOpenLanguage, onOpenMyCo
     setIsDark(!isDark);
   };
 
+  const isAdmin = userEmail === 'corestorenetflix@gmail.com';
+
   const settingGroups = [
+    ...(isAdmin ? [{
+      title: 'بەڕێوەبردن (تەنها بۆ ئەدمین)',
+      items: [
+        { id: 'admin', icon: Shield, label: 'داشبۆردی ئەدمین' }
+      ]
+    }] : []),
     {
       title: 'هەژمار',
       items: [
@@ -59,6 +68,8 @@ export function SettingsTab({ onToast, onOpenProfile, onOpenLanguage, onOpenMyCo
       onOpenMyCourses();
     } else if (item.id === 'lang') {
       onOpenLanguage();
+    } else if (item.id === 'admin') {
+      onOpenAdmin();
     } else {
       onToast(`کردنەوەی بەشی: ${item.label}`);
     }
@@ -68,9 +79,11 @@ export function SettingsTab({ onToast, onOpenProfile, onOpenLanguage, onOpenMyCo
     <div className="flex flex-col min-h-full bg-white dark:bg-gray-900 animate-in fade-in duration-500 pb-12 transition-colors duration-300">
       {/* Profile Header */}
       <div className="pt-12 pb-8 px-6 flex items-center gap-5 border-b border-gray-50 dark:border-gray-800 mb-6">
-        <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center text-gray-400 border border-gray-200 dark:border-gray-700 shadow-sm relative">
-          <User size={32} strokeWidth={1.5} />
-          <div className="absolute bottom-0 right-1 w-5 h-5 bg-gray-900 dark:bg-white rounded-full border-2 border-white dark:border-gray-900 flex items-center justify-center">
+        <div className="relative">
+          <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center text-gray-400 border border-gray-200 dark:border-gray-700 shadow-sm relative overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop" alt="avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+          </div>
+          <div className="absolute bottom-0 right-1 w-5 h-5 bg-gray-900 dark:bg-white rounded-full border-2 border-white dark:border-gray-900 flex items-center justify-center z-10">
             <div className="w-1.5 h-1.5 bg-white dark:bg-gray-900 rounded-full"></div>
           </div>
         </div>

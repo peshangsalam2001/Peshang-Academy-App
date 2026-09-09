@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Bell, Search, Play, ArrowLeft, Star, Library } from 'lucide-react';
-import { mockCourses } from '../data';
+import { mockCourses, mockContinueLearning } from '../data';
 import { TabType } from '../types';
 
 interface HomeTabProps {
@@ -33,7 +33,7 @@ export function HomeTab({ onNavigate, onToast, onOpenCourse, unreadCount, onOpen
       <div className="pt-12 pb-6 px-6">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mb-1">سڵاو، بەیانیت باش</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-1">سڵاو، ئەم کاتەت باش</p>
             <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{userName}</h1>
           </div>
           <div className="flex items-center gap-2">
@@ -88,8 +88,12 @@ export function HomeTab({ onNavigate, onToast, onOpenCourse, unreadCount, onOpen
                     onClick={() => onOpenCourse(course.id)}
                     className="bg-white dark:bg-gray-800 rounded-[24px] p-3 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all flex gap-4 items-center cursor-pointer"
                   >
-                    <div className="w-20 h-20 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-[18px] shrink-0 flex items-center justify-center text-gray-400 dark:text-gray-500">
-                      <Play size={20} />
+                    <div className="w-20 h-20 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-[18px] shrink-0 flex items-center justify-center text-gray-400 dark:text-gray-500 overflow-hidden relative">
+                      {course.image ? (
+                        <img src={course.image} alt={course.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      ) : (
+                        <Play size={20} />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0 py-1 pr-1">
                       <h3 className="font-bold text-gray-900 dark:text-white text-sm truncate mb-1">{course.title}</h3>
@@ -104,24 +108,36 @@ export function HomeTab({ onNavigate, onToast, onOpenCourse, unreadCount, onOpen
         ) : (
           <>
             {/* Continue Learning */}
-            <div>
+            <div className="mb-8">
               <div className="flex justify-between items-center mb-5">
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">بەردەوام بە</h2>
               </div>
-              <div 
-                onClick={() => onOpenCourse(mockCourses[0].id)}
-                className="bg-white dark:bg-gray-800 rounded-[24px] p-4 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex items-center gap-4"
-              >
-                <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-2xl flex items-center justify-center shrink-0 border border-gray-100 dark:border-gray-600">
-                  <Play size={24} className="text-gray-900 dark:text-white ml-1" fill="currentColor" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-1">مایکرۆسۆفت وۆرد</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">وانەی ٤: دروستکردنی خشتە</p>
-                  <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1">
-                    <div className="bg-gray-900 dark:bg-white h-1 rounded-full" style={{ width: '45%' }}></div>
+              <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2 -mx-6 px-6">
+                {mockContinueLearning.map((item) => (
+                  <div 
+                    key={item.courseId}
+                    onClick={() => onOpenCourse(item.courseId)}
+                    className="bg-white dark:bg-gray-800 rounded-[24px] p-4 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex items-center gap-4 min-w-[280px]"
+                  >
+                    <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-2xl flex items-center justify-center shrink-0 border border-gray-100 dark:border-gray-600 overflow-hidden relative group">
+                      {item.course.image ? (
+                        <>
+                          <img src={item.course.image} alt="course" className="w-full h-full object-cover opacity-60 group-hover:opacity-50 transition-opacity" referrerPolicy="no-referrer" />
+                          <Play size={24} className="absolute text-white ml-1 shadow-sm drop-shadow-md" fill="currentColor" />
+                        </>
+                      ) : (
+                        <Play size={24} className="text-gray-900 dark:text-white ml-1" fill="currentColor" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-1 truncate">{item.course.title}</h3>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 truncate">{item.currentLesson}</p>
+                      <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1">
+                        <div className="bg-gray-900 dark:bg-white h-1 rounded-full" style={{ width: `${item.progress}%` }}></div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
 
@@ -141,10 +157,14 @@ export function HomeTab({ onNavigate, onToast, onOpenCourse, unreadCount, onOpen
                 onClick={() => onOpenCourse(featuredCourse.id)}
                 className="bg-white dark:bg-gray-800 rounded-[24px] overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
-                <div className="h-48 bg-gray-50 dark:bg-gray-700 relative flex items-center justify-center border-b border-gray-50 dark:border-gray-600">
-                   <div className="w-20 h-20 bg-white dark:bg-gray-800 rounded-full shadow-sm flex items-center justify-center text-gray-900 dark:text-white border border-gray-100 dark:border-gray-700">
-                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                   </div>
+                <div className="h-48 bg-gray-50 dark:bg-gray-700 relative flex items-center justify-center border-b border-gray-50 dark:border-gray-600 overflow-hidden group">
+                   {featuredCourse.image ? (
+                     <img src={featuredCourse.image} alt={featuredCourse.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" referrerPolicy="no-referrer" />
+                   ) : (
+                     <div className="w-20 h-20 bg-white dark:bg-gray-800 rounded-full shadow-sm flex items-center justify-center text-gray-900 dark:text-white border border-gray-100 dark:border-gray-700">
+                       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                     </div>
+                   )}
                    <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-[10px] font-bold text-gray-700 dark:text-gray-200 border border-gray-100 dark:border-gray-600 shadow-sm">
                      {featuredCourse.category}
                    </div>

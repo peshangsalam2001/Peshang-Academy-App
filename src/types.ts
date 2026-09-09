@@ -11,6 +11,7 @@ export interface Course {
   students: number;
   color: string;
   icon: string;
+  image?: string;
   description: string;
   lessonsCount: number;
 }
@@ -32,12 +33,15 @@ export interface Transaction {
   reference?: string;
 }
 
-export interface Task {
+export interface Exam {
   id: string;
-  course: string;
+  courseId: string;
+  courseName: string;
   title: string;
-  dueDate: string;
-  completed: boolean;
+  date: string;
+  durationMinutes: number;
+  totalMarks: number;
+  status: 'upcoming' | 'active' | 'completed';
   description: string;
 }
 
@@ -48,4 +52,5 @@ export interface AppNotification {
   date: string;
   read: boolean;
   type: 'topup' | 'purchase' | 'course' | 'system';
+  actionId?: string; // id of the related item (courseId, transactionId, etc)
 }

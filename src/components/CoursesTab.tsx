@@ -23,12 +23,18 @@ export function CoursesTab({ onOpenCourse, onOpenMyCourses }: CoursesTabProps) {
     <div className="flex flex-col min-h-full bg-white dark:bg-gray-900 animate-in fade-in duration-500 transition-colors duration-300">
       <div className="px-6 pt-12 pb-4 sticky top-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl z-20 border-b border-gray-50 dark:border-gray-800">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">کۆرسەکان</h1>
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+              <Library size={20} strokeWidth={2} />
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">کۆرسەکان</h1>
+          </div>
           <button 
             onClick={onOpenMyCourses}
-            className="w-10 h-10 rounded-full border border-gray-100 dark:border-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+            className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-3.5 py-2 rounded-2xl flex items-center gap-1.5 font-bold text-xs hover:opacity-90 transition-opacity cursor-pointer shadow-sm"
           >
-            <Library size={18} strokeWidth={1.5} />
+            <Library size={16} strokeWidth={2} />
+            <span>کۆرسەکانم</span>
           </button>
         </div>
         
@@ -77,8 +83,12 @@ export function CoursesTab({ onOpenCourse, onOpenMyCourses }: CoursesTabProps) {
             onClick={() => onOpenCourse(course.id)}
             className="bg-white dark:bg-gray-800 rounded-[24px] p-3 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all flex gap-4 items-center cursor-pointer"
           >
-            <div className="w-24 h-24 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-[18px] shrink-0 flex items-center justify-center text-gray-400 dark:text-gray-500">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+            <div className="w-24 h-24 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-[18px] shrink-0 flex items-center justify-center text-gray-400 dark:text-gray-500 overflow-hidden relative">
+              {course.image ? (
+                <img src={course.image} alt={course.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              ) : (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              )}
             </div>
             
             <div className="flex-1 min-w-0 py-1 pr-1">

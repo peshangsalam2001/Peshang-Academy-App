@@ -12,7 +12,7 @@ export function BottomNav({ activeTab, onChange }: BottomNavProps) {
     { id: 'home', label: 'سەرەتا', icon: Home },
     { id: 'courses', label: 'کۆرسەکان', icon: BookOpen },
     { id: 'wallet', label: 'جزدان', icon: Wallet },
-    { id: 'tasks', label: 'ئەرکەکان', icon: CheckSquare },
+    { id: 'tasks', label: 'تاقیکردنەوەکان', icon: CheckSquare },
     { id: 'settings', label: 'ڕێکخستن', icon: Settings },
   ];
 
